@@ -10,6 +10,8 @@ const authInitialization = () => {
     const auth = new AuthService();
     const user = await auth.getUser();
     if (user) {
+      // @ts-ignore
+      window.EventBus.dispatchEvent('push_user', { user });
       if (location.pathname === '/') {
         const prevUrl = window.localStorage.getItem('prev_url');
 
