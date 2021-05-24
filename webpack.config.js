@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const HtmlWebPackPlugin = require('html-webpack-plugin')
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin')
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const path = require('path')
@@ -7,7 +6,7 @@ const dotenv = require('dotenv');
 
 module.exports = {
   output: {
-    publicPath: 'http://localhost:8090/'
+    publicPath: 'https://localhost:8089/'
   },
 
   resolve: {
@@ -20,9 +19,10 @@ module.exports = {
   },
 
   devServer: {
+    https: true,
     historyApiFallback: true,
     contentBase: path.join(__dirname, 'public'),
-    port: 8090,
+    port: 8089,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -75,18 +75,15 @@ module.exports = {
   },
 
   plugins: [
+    new DefinePlugin({
+      'process.env': JSON.stringify(dotenv.config().parsed)
+    }),
     new ModuleFederationPlugin({
       name: 'auth',
       filename: 'remoteEntry.js',
       exposes: {
         './main': './src/index'
       }
-    }),
-    new HtmlWebPackPlugin({
-      template: './public/index.html'
-    }),
-    new DefinePlugin({
-      'process.env': JSON.stringify(dotenv.config().parsed)
     })
   ]
 }

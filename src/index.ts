@@ -1,14 +1,14 @@
 import { routes, router } from './router/router';
 import initAppConfig from "@utils/app-config";
 import AuthService, { auth } from "@services/AuthService";
+import { initListeners } from './bus';
 
 const authInitialization = () => {
   initAppConfig().then(async (config: any) => {
+    initListeners();
     window.localStorage.setItem('arm_auth_config', JSON.stringify(config));
     const auth = new AuthService();
     const user = await auth.getUser();
-    console.log(user);
-    let isLoggedIn = false;
     if (user) {
       if (location.pathname === '/') {
         const prevUrl = window.localStorage.getItem('prev_url');
@@ -22,8 +22,6 @@ const authInitialization = () => {
     } else {
       const pathname = location.pathname.replace('/microws', '');
       const search = location.search;
-      console.log('login');
-      console.log(config);
       if (routes.includes(pathname)) {
         router(pathname)
       } else if (pathname !== '/' && pathname !== '/callback') {
@@ -35,6 +33,6 @@ const authInitialization = () => {
   })
 }
 
-authInitialization();
+// authInitialization();
 
 export default authInitialization;
