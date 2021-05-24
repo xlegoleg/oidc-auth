@@ -1,5 +1,5 @@
 {
-  "name": "front-orchestrator",
+  "name": "oidic-auth",
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --mode production",

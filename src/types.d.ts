@@ -1,5 +1,0 @@
-declare module 'app1/App'
-declare module 'app2/App2'
-declare module 'app3/App3'
-declare module 'app1/routes'
-declare module '@/plugins/vuetify'
