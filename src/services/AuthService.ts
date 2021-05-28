@@ -6,16 +6,17 @@ import {
 } from 'oidc-client';
 import scopes from '@utils/scopes';
 import _ from 'lodash';
-//import store from '@state/store';
+import { router } from '@router/router';
+import { routes } from '@router/routes'
 import { messageBroadcast } from '@/utils/broadcast';
 
 export default class AuthService {
+
   private user: User | null = null;
   private userManager: UserManager;
 
   constructor() {
-    const config: any = window.localStorage.getItem('arm_auth_config');
-    const STS_DOMAIN = config ? JSON.parse(config).authority : '';
+    const STS_DOMAIN = process.env.AUTH_DOMAIN;
     let scope: string[] = [];
 
     for (const key in scopes) {
@@ -78,6 +79,32 @@ export default class AuthService {
     // #endregion
   }
 
+  public async checkLoginUser(): Promise<void> {
+    const user = await this.getUser() ;
+    if (user) {
+      window.localStorage.setItem('arm_auth_user', JSON.stringify(user));
+      if (location.pathname === '/') {
+        const prevUrl = window.localStorage.getItem('prev_url');
+
+        if (prevUrl) {
+          window.localStorage.removeItem('prev_url');
+          location.replace(`${location.origin}${prevUrl}`)
+        }
+
+      }
+    } else {
+      const pathname = location.pathname.replace('/microws', '');
+      const search = location.search;
+      if (routes.includes(pathname)) {
+        router(pathname)
+      } else if (pathname !== '/' && pathname !== '/callback') {
+        window.localStorage.setItem('prev_url', `${pathname}${search}`);
+      } else {
+        this.login();
+      }
+    }
+  }
+
   public getUser(): Promise<User | null> {
     if (this.user) return Promise.resolve(this.user);
     else return this.userManager.getUser();
@@ -116,6 +143,7 @@ export default class AuthService {
   }
 
   public logout(): Promise<void> {
+    window.localStorage.removeItem('arm_auth_user');
     return this.userManager.signoutRedirect();
   }
 
@@ -126,4 +154,7 @@ export default class AuthService {
   }
 }
 
-export const auth = new AuthService()
+/**
+ * @singleton Auth instance
+ */
+export const Auth = new AuthService();

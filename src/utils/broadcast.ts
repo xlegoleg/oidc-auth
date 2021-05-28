@@ -1,5 +1,5 @@
 import { get, isEmpty, isEqual, isObject } from 'lodash';
-import AuthService, { auth } from '@services/AuthService';
+import { Auth } from '@services/AuthService';
 
 // use local storage for messaging. Set message in local storage and clear it right away
 // This is a safe way how to communicate with other tabs while not leaving any traces
@@ -13,7 +13,6 @@ export function messageBroadcast(message: any) {
 // receive message
 //
 export function messageReceive(e: any) {
-  const auth = new AuthService();
   const key = get(e, 'key');
 
   if (!isEqual(key, 'microws')) {
@@ -34,8 +33,8 @@ export function messageReceive(e: any) {
         switch (action) {
           case 'relogin': {
             setTimeout(() => {
-              auth.logout().then(() => {
-                auth.setUser(null);
+              Auth.logout().then(() => {
+                Auth.setUser(null);
               });
             }, 1000); // вкладка-инициатор выхода должна быть первой, поэтому тут задержка
 

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin')
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
-const path = require('path')
+const path = require('path');
 const dotenv = require('dotenv');
 
 module.exports = {
@@ -14,7 +15,8 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, 'src/'),
       '@utils': path.resolve(__dirname, 'src/utils/'),
-      '@services': path.resolve(__dirname, 'src/services')
+      '@services': path.resolve(__dirname, 'src/services/'),
+      '@router': path.resolve(__dirname, 'src/router/')
     }
   },
 
@@ -75,6 +77,9 @@ module.exports = {
   },
 
   plugins: [
+    new HtmlWebPackPlugin({
+      template: './public/index.html'
+    }),
     new DefinePlugin({
       'process.env': JSON.stringify(dotenv.config().parsed)
     }),

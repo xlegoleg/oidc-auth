@@ -1,5 +1,0 @@
-{
-  "authority": "https://sso.test.devsun.ru/idm-micro",
-  "frontSSO": "https://sso.test.devsun.ru/front-idm-micro",
-  "isProd": false
-}
